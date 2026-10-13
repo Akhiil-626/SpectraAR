@@ -1,0 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* LIGHT MODE: page background CREAM (#F4EBD0), all text/borders/lines/accents/fills NAVY (#0B1F3A) */
+  :root {
+    --color-bg: #F4EBD0;
+    --color-fg: #0B1F3A;
+    --color-bg-rgb: 244 235 208;
+    --color-fg-rgb: 11 31 58;
+
+    --color-text-primary: #0B1F3A;
+    --color-text-muted: rgba(11, 31, 58, 0.6);
+    --color-border: rgba(11, 31, 58, 0.2);
+    --color-surface: rgba(11, 31, 58, 0.06);
+    --color-accent: #0B1F3A;
+    --color-accent-fg: #F4EBD0;
+
+    /* Light mode liquid glass recipe: navy fill at 9%, navy border at 28%, cream highlight at 60%, faint navy shade */
+    --glass-bg: rgba(11, 31, 58, 0.09);
+    --glass-border: rgba(11, 31, 58, 0.28);
+    --glass-highlight: rgba(244, 235, 208, 0.6);
+    --glass-shade: rgba(11, 31, 58, 0.08);
+
+    /* Shadcn standard theme variables */
+    --background: #F4EBD0;
+    --foreground: #0B1F3A;
+    --card: rgba(11, 31, 58, 0.06);
+    --card-foreground: #0B1F3A;
+    --popover: #F4EBD0;
+    --popover-foreground: #0B1F3A;
+    --primary: #0B1F3A;
+    --primary-foreground: #F4EBD0;
+    --secondary: rgba(11, 31, 58, 0.06);
+    --secondary-foreground: #0B1F3A;
+    --muted: rgba(11, 31, 58, 0.06);
+    --muted-foreground: rgba(11, 31, 58, 0.6);
+    --border: rgba(11, 31, 58, 0.2);
+    --input: rgba(11, 31, 58, 0.2);
+    --ring: #0B1F3A;
+  }
+
+  /* DARK MODE (default): page background NAVY (#0B1F3A), all text/borders/lines/accents CREAM (#F4EBD0) */
+  .dark {
+    --color-bg: #0B1F3A;
+    --color-fg: #F4EBD0;
+    --color-bg-rgb: 11 31 58;
+    --color-fg-rgb: 244 235 208;
+
+    --color-text-primary: #F4EBD0;
+    --color-text-muted: rgba(244, 235, 208, 0.6);
+    --color-border: rgba(244, 235, 208, 0.2);
+    --color-surface: rgba(244, 235, 208, 0.06);
+    --color-accent: #F4EBD0;
+    --color-accent-fg: #0B1F3A;
+
+    /* Dark mode liquid glass recipe: cream fill at 9%, cream border at 28%, cream highlight at 40%, faint shade */
+    --glass-bg: rgba(244, 235, 208, 0.09);
+    --glass-border: rgba(244, 235, 208, 0.28);
+    --glass-highlight: rgba(244, 235, 208, 0.4);
+    --glass-shade: rgba(11, 31, 58, 0.25);
+
+    /* Shadcn standard theme variables */
+    --background: #0B1F3A;
+    --foreground: #F4EBD0;
+    --card: rgba(244, 235, 208, 0.06);
+    --card-foreground: #F4EBD0;
+    --popover: #0B1F3A;
+    --popover-foreground: #F4EBD0;
+    --primary: #F4EBD0;
+    --primary-foreground: #0B1F3A;
+    --secondary: rgba(244, 235, 208, 0.06);
+    --secondary-foreground: #F4EBD0;
+    --muted: rgba(244, 235, 208, 0.06);
+    --muted-foreground: rgba(244, 235, 208, 0.6);
+    --border: rgba(244, 235, 208, 0.2);
+    --input: rgba(244, 235, 208, 0.2);
+    --ring: #F4EBD0;
+  }
+
+  /* Global ban on shadows/text-shadows, EXCEPT explicitly scoped .landing-glass */
+  *:not(.landing-glass):not(.landing-glass *) {
+    border-color: var(--color-border);
+    box-sizing: border-box;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: 'Inter Tight', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Ensure completely flat focus rings with no glow or shadow */
+:focus-visible {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+/* Marker pure white canvas (#FFFFFF) with square corners - the one allowed exception */
+.marker-canvas {
+  background-color: #FFFFFF !important;
+}
+
+/* Fine pointer custom cursor integration */
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  body.has-custom-cursor {
+    cursor: none;
+  }
+  body.has-custom-cursor a,
+  body.has-custom-cursor button,
+  body.has-custom-cursor select,
+  body.has-custom-cursor [role="button"],
+  body.has-custom-cursor [role="combobox"] {
+    cursor: none !important;
+  }
+  body.has-custom-cursor [data-marker-slot],
+  body.has-custom-cursor [data-marker-slot] * {
+    cursor: auto !important;
+  }
+  body.has-custom-cursor [data-fullscreen-marker],
+  body.has-custom-cursor [data-fullscreen-marker] * {
+    cursor: auto !important;
+  }
+  body.has-custom-cursor [data-fullscreen-marker] button,
+  body.has-custom-cursor [data-marker-slot] button {
+    cursor: pointer !important;
+  }
+}
+
+/* LANDING PAGE ONLY: Liquid Glass Styles */
+.landing-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 1px 1px 0 var(--glass-highlight), inset -1px -1px 0 var(--glass-shade);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .landing-glass {
+    background: rgba(var(--color-fg-rgb) / 0.14) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .landing-glass {
+    background: rgba(var(--color-fg-rgb) / 0.14) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* Liquid glass card hover wobble and soft motion */
+.landing-glass-card {
+  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1), border-radius 800ms ease;
+  will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .landing-glass-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    border-radius: 28px 24px 30px 26px;
+  }
+}
+
+/* Module row expanding circle hover layer (foreground at 16% fill, no text inversion) */
+.module-row-hover-circle {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: rgba(var(--color-fg-rgb) / 0.16);
+  clip-path: circle(0% at var(--rx, 50%) var(--ry, 50%));
+  transition: clip-path 350ms cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: inherit;
+  z-index: 1;
+}
+
+.group:hover .module-row-hover-circle {
+  clip-path: circle(150% at var(--rx, 50%) var(--ry, 50%));
+}
