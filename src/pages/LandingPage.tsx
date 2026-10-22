@@ -19,82 +19,54 @@ import {
   SlidersHorizontal,
 } from 'lucide-react';
 import { getMarkerCountByModule } from '@/data/markers';
+import { MODULES, ModuleConfig, getHeroMarqueeText } from '@/data/modules';
 import { HeroWordmark } from '@/components/hero/HeroWordmark';
 import { KineticTextReveal } from '@/components/animated/KineticTextReveal';
 import { FlippingWordSwap } from '@/components/animated/FlippingWordSwap';
 import { FlipText } from '@/components/animated/FlipText';
-import { prefetchChemistry, prefetchPhysics, prefetchOptics } from '@/App';
-
-interface ModuleCard {
-  code: 'CHE' | 'PHY' | 'OPT';
-  name: string;
-  path: string;
-  moduleId: 'chemistry' | 'physics' | 'optics';
-  slots: number;
-}
-
-const MODULES: ModuleCard[] = [
-  {
-    code: 'CHE',
-    name: 'Chemistry',
-    path: '/chemistry',
-    moduleId: 'chemistry',
-    slots: 2,
-  },
-  {
-    code: 'PHY',
-    name: 'Physics',
-    path: '/physics',
-    moduleId: 'physics',
-    slots: 1,
-  },
-  {
-    code: 'OPT',
-    name: 'Ray Optics',
-    path: '/optics',
-    moduleId: 'optics',
-    slots: 2,
-  },
-];
+import { prefetchModule } from '@/App';
 
 const SCANNING_TIPS = [
   {
     icon: SunMedium,
-    title: 'Screen Glare',
-    description: 'Avoid harsh overhead lights reflecting on the screen.',
+    title: 'Brightness',
+    description: 'Set your screen to maximum brightness so the marker stays high contrast.',
   },
   {
     icon: Smartphone,
-    title: 'Distance',
-    description: 'Hold the phone 30-50 cm away from the display.',
+    title: 'Position',
+    description: 'Keep the marker flat and fully visible, with nothing covering it and no glare from windows or lights.',
   },
   {
     icon: Maximize,
-    title: 'Fullscreen',
-    description: 'Use the fullscreen button to expand single markers.',
+    title: 'Size',
+    description: 'Use the size control so the marker is large and sharp on screen.',
   },
   {
     icon: SlidersHorizontal,
-    title: 'Adjustment',
-    description: 'Use the size slider and bottom gap bar to calibrate your view.',
+    title: 'Layout',
+    description: "In two-marker modules, arrange both markers so they fit inside the phone's camera view together.",
   },
 ];
+
+const moduleNamesList = MODULES.map((m) => m.name);
+const formattedModuleNames = `${moduleNamesList.slice(0, -1).join(', ')}, or ${moduleNamesList[moduleNamesList.length - 1]}`;
 
 const HOW_IT_WORKS_STEPS = [
   {
     step: '01',
     title: 'Choose a module.',
-    description: 'Select Chemistry, Physics, or Ray Optics from the catalog below.',
+    description: `Pick from ${formattedModuleNames}.`,
   },
   {
     step: '02',
     title: 'Select a marker.',
-    description: 'Use the slot dropdowns to display high-contrast AR tracking targets.',
+    description: 'Choose the item to show from the dropdown. Modules that combine two items, such as chemicals or lenses, show two markers.',
   },
   {
     step: '03',
     title: 'Scan it with the AR device.',
-    description: 'Point the phone running the SpectraAR mobile app at the screen to start the 3D simulation.',
+    description: 'Point the SpectraAR app on your phone at the marker and the experiment appears in 3D.',
   },
 ];
 
@@ -333,7 +305,7 @@ const GlassCard: React.FC<{
 // Infinite scrolling marquee strip
 const InfiniteMarqueeStrip: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
-  const text = 'CHE / PHY / OPT / MARKER / SCAN \u00A0\u00A0\u2014\u00A0\u00A0 ';
+  const text = getHeroMarqueeText();
   const repeatedText = Array(10).fill(text).join('');
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -417,7 +389,7 @@ const InfiniteMarqueeStrip: React.FC = () => {
 };
 
 // Module row item with expanding circle hover layer (16% fill, no inversion), 8px element shifts, and FlipText wave
-const ModuleRowItem: React.FC<{ mod: ModuleCard }> = ({ mod }) => {
+const ModuleRowItem: React.FC<{ mod: ModuleConfig }> = ({ mod }) => {
   const rowRef = useRef<HTMLDivElement>(null);
   const linkRef = useRef<HTMLAnchorElement>(null);
   const shouldReduceMotion = useReducedMotion();
@@ -436,9 +408,7 @@ const ModuleRowItem: React.FC<{ mod: ModuleCard }> = ({ mod }) => {
   });
 
   const handlePrefetch = () => {
-    if (mod.moduleId === 'chemistry') prefetchChemistry();
-    else if (mod.moduleId === 'physics') prefetchPhysics();
-    else if (mod.moduleId === 'optics') prefetchOptics();
+    prefetchModule(mod.id);
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLAnchorElement>) => {
@@ -450,7 +420,7 @@ const ModuleRowItem: React.FC<{ mod: ModuleCard }> = ({ mod }) => {
     linkRef.current.style.setProperty('--ry', `${y}px`);
   };
 
-  const count = getMarkerCountByModule(mod.moduleId);
+  const count = getMarkerCountByModule(mod.id);
 
   return (
     <div ref={rowRef} className="w-full">
@@ -469,7 +439,7 @@ const ModuleRowItem: React.FC<{ mod: ModuleCard }> = ({ mod }) => {
         }}
         onBlur={() => setIsHovered(false)}
         onPointerMove={handlePointerMove}
-        className={`group relative block rounded-[32px] landing-glass landing-glass-card py-8 sm:py-12 px-6 sm:px-12 transition-all duration-200 overflow-hidden hover:border-[rgba(var(--color-fg-rgb)/0.5)] ${
+        className={`group relative block rounded-[32px] landing-glass landing-glass-card py-6 sm:py-8 px-6 sm:px-10 transition-all duration-200 overflow-hidden hover:border-[rgba(var(--color-fg-rgb)/0.5)] ${
           isNearCenter ? 'border-accent' : ''
         }`}
       >
@@ -489,7 +459,7 @@ const ModuleRowItem: React.FC<{ mod: ModuleCard }> = ({ mod }) => {
 
             <motion.h2
               style={shouldReduceMotion ? {} : { x: titleX }}
-              className="relative font-sans font-bold text-4xl sm:text-6xl md:text-7xl lg:text-[84px] xl:text-[96px] tracking-tight text-text-primary leading-none will-change-transform"
+              className="relative font-sans font-bold text-[clamp(28px,5vw,72px)] tracking-tight text-text-primary leading-none will-change-transform"
             >
               <span
                 className={`inline-block transition-all duration-300 ease-out will-change-transform ${
@@ -575,10 +545,10 @@ export const LandingPage: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
   const heroRef = useRef<HTMLDivElement>(null);
 
-  const totalMarkers =
-    getMarkerCountByModule('chemistry') +
-    getMarkerCountByModule('physics') +
-    getMarkerCountByModule('optics');
+  const totalMarkers = MODULES.reduce(
+    (sum, mod) => sum + getMarkerCountByModule(mod.id),
+    0
+  );
 
   const scrollToModules = () => {
     const el = document.getElementById('modules');
@@ -622,9 +592,9 @@ export const LandingPage: React.FC = () => {
               <span>SYSTEM READY</span>
             </div>
             <div className="hidden sm:flex items-center gap-4">
-              <span>PHYSICS & CHEMISTRY</span>
+              <span>SCHOOL SCIENCE</span>
               <span>•</span>
-              <span>AR SIMULATION</span>
+              <span>AR MARKERS</span>
             </div>
           </div>
         </div>
@@ -645,16 +615,19 @@ export const LandingPage: React.FC = () => {
             <HeroWordmark />
           </div>
 
-          {/* Subtitle */}
-          <div className="mt-8 text-center max-w-xl mx-auto">
+          {/* Subtitle & Hero Description */}
+          <div className="mt-8 text-center max-w-2xl mx-auto space-y-3">
             <KineticTextReveal
-              text="Marker display system for augmented reality physics and chemistry simulations."
+              text="AR marker dashboard for school science experiments."
               className="font-mono text-xs sm:text-sm text-text-muted leading-relaxed"
             />
+            <p className="font-mono text-xs sm:text-sm text-text-muted leading-relaxed max-w-xl mx-auto">
+              SpectraAR is an augmented reality lab for school science. Pick an experiment from {MODULES.length} modules, scan its marker with the SpectraAR app on your phone, and the experiment appears in 3D on your desk for you to explore and adjust.
+            </p>
           </div>
         </motion.div>
 
-        {/* CHE / PHY / OPT marquee scrolling strip */}
+        {/* Marquee scrolling strip */}
         <InfiniteMarqueeStrip />
 
         {/* Hero Bottom Bar */}
@@ -674,7 +647,7 @@ export const LandingPage: React.FC = () => {
 
             <div className="font-mono text-xs text-text-muted landing-glass px-4 py-2.5 rounded-full flex items-center gap-1">
               <span className="text-accent font-semibold">
-                <CountUp end={3} duration={600} /> MODULES
+                <CountUp end={MODULES.length} duration={600} /> MODULES
               </span>
               <span className="mx-2 text-border">/</span>
               <span>
@@ -751,7 +724,7 @@ export const LandingPage: React.FC = () => {
             </MaskedLine>
           </div>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4 sm:gap-5">
             {MODULES.map((mod) => (
               <ModuleRowItem key={mod.code} mod={mod} />
             ))}

@@ -134,6 +134,19 @@
   body.has-custom-cursor [data-marker-slot] button {
     cursor: pointer !important;
   }
+  body.has-custom-cursor [data-drag-handle] {
+    cursor: grab !important;
+  }
+  body.has-custom-cursor [data-drag-handle]:active,
+  body.has-custom-cursor [data-drag-handle].is-dragging,
+  body.is-dragging-panel,
+  body.is-dragging-panel * {
+    cursor: grabbing !important;
+  }
+  body.is-dragging-panel {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+  }
 }
 
 /* LANDING PAGE ONLY: Liquid Glass Styles */

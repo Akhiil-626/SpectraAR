@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getMarkersByModule, Marker } from '@/data/markers';
+import { getSlotStorageKey, getModuleById } from '@/data/modules';
 import { MarkerSlot } from '@/components/marker/MarkerSlot';
 import { FullscreenViewer } from '@/components/marker/FullscreenViewer';
 import { KineticTextReveal } from '@/components/animated/KineticTextReveal';
 
-const STORAGE_SLOT_0 = 'spectraar-slot-physics-0';
+const moduleConfig = getModuleById('physics');
+const STORAGE_SLOT_0 = getSlotStorageKey('physics', 0);
 
 export const PhysicsPage: React.FC = () => {
   const physicsMarkers = getMarkersByModule('physics');
@@ -42,10 +44,10 @@ export const PhysicsPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <span className="w-2.5 h-2.5 rounded-full bg-accent inline-block" />
           <span className="font-mono text-xs uppercase tracking-widest text-text-muted">
-            PHY
+            {moduleConfig.code}
           </span>
           <KineticTextReveal
-            text="Physics"
+            text={moduleConfig.name}
             className="font-sans font-bold text-3xl sm:text-4xl text-text-primary tracking-tight"
           />
         </div>

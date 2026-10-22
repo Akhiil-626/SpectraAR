@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useReducedMotion } from 'framer-motion';
+import { MODULES } from '@/data/modules';
 
 export const Footer: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
@@ -26,27 +27,18 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-6">
-          <nav className="flex items-center gap-4">
-            <Link
-              to="/chemistry"
-              className="hover:text-accent transition-colors"
-            >
-              CHE
-            </Link>
-            <span className="text-border">/</span>
-            <Link
-              to="/physics"
-              className="hover:text-accent transition-colors"
-            >
-              PHY
-            </Link>
-            <span className="text-border">/</span>
-            <Link
-              to="/optics"
-              className="hover:text-accent transition-colors"
-            >
-              OPT
-            </Link>
+          <nav className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center">
+            {MODULES.map((mod, idx) => (
+              <React.Fragment key={mod.code}>
+                <Link
+                  to={mod.path}
+                  className="hover:text-accent transition-colors"
+                >
+                  {mod.code}
+                </Link>
+                {idx < MODULES.length - 1 && <span className="text-border">/</span>}
+              </React.Fragment>
+            ))}
           </nav>
 
           {/* Home / Back to top pill button */}

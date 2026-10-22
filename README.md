@@ -18,7 +18,7 @@ Instead of relying on fragile, damaged, or glare-prone paper printouts, SpectraA
 ### 🎯 Calibration & Precision Controls
 - **High-Contrast Marker Cards**: Each marker is enclosed within an isolated pure-white matte card to ensure maximum optical contrast and reliable keypoint tracking across various screen types and lighting conditions.
 - **Individual Scale Sliders**: Per-slot scaling control (50% to 130%) to adapt tracking target size based on camera distance, device resolution, and room acoustics.
-- **Dynamic Inter-Marker Gap Bar**: Fixed bottom calibration bar allowing real-time inter-marker distance adjustment (8px to 160px) to establish precise physical baselines for multi-marker experiments.
+- **Draggable Window Panels**: Smooth window-style marker positioning with edge-to-edge snapping (Gap 0 px), non-overlapping collision physics, and live gap readout to position tracking targets flexibly in camera view.
 - **Distraction-Free Fullscreen Viewer**: 1-click modal expansion with native Fullscreen API integration for maximum screen coverage and glare reduction.
 - **Session Persistence**: Automatic `localStorage` caching remembers marker selections across browser reloads.
 
@@ -122,6 +122,9 @@ Adding new AR markers is fully automated via the central data registry:
    - Chemistry: `public/markers/chemistry/<filename>.png` (or `.jpeg`)
    - Physics: `public/markers/physics/<filename>.png`
    - Ray Optics: `public/markers/optics/<filename>.png`
+   - Pendulum: `public/markers/pendulum/<filename>.png`
+   - Biology: `public/markers/biology/<filename>.png`
+   - Magnetism: `public/markers/magnetism/<filename>.png`
 
 2. **Register the marker** with a single entry in [`src/data/markers.ts`](src/data/markers.ts):
    ```typescript
@@ -134,6 +137,13 @@ Adding new AR markers is fully automated via the central data registry:
    ```
 
 The newly registered marker will automatically appear in module statistics, slot dropdowns, and fullscreen viewers across the entire app.
+
+---
+
+## ➕ Adding a Module
+
+1. Add an entry to `src/data/modules.ts` with id, code, name, and slots (1 or 2).
+2. Add the corresponding markers to `src/data/markers.ts` and marker images in `public/markers/<module>/`.
 
 ---
 

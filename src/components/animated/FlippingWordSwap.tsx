@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { MODULES } from '@/data/modules';
 
-const DEFAULT_WORDS = ['Chemistry', 'Physics', 'Ray Optics'];
+const DEFAULT_WORDS = MODULES.map((m) => m.name);
 
 interface FlippingWordSwapProps {
   className?: string;
